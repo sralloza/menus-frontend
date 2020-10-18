@@ -1,0 +1,25 @@
+<div id="dinner" class="container">
+  <div class="row h-100 d-flex p-2 align-items-center p-sm-0">
+    <div class="col-sm-4 text-right mr-4 d-none d-sm-block">
+      <h5>Cena</h5>
+    </div>
+    <div class="col-sm-4 mr-4 d-sm-none">
+      <h5>Cena</h5>
+    </div>
+    <div class="row col-sm-8">
+      <div class="w-100 text-left d-none d-sm-block">
+        <p id="dinner-1a" [innerHTML]="meal.p1"></p>
+      </div>
+      <div class="w-100 d-sm-none">
+        <p id="dinner-1b" [innerHTML]="meal.p1"></p>
+      </div>
+
+      <div class="w-100 text-left d-none d-sm-block">
+        <p id="dinner-2a" [innerHTML]="meal.p2 != null ? meal.p2 : null"></p>
+      </div>
+      <div class="w-100 d-sm-none">
+        <p id="dinner-2b" [innerHTML]="meal.p2 != null ? meal.p2 : null"></p>
+      </div>
+    </div>
+  </div>
+</div>

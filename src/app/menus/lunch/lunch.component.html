@@ -1,0 +1,26 @@
+<!-- Create div above #lunch and #dinner divs. -->
+<div id="lunch" class="container">
+  <div class="row h-100 d-flex p-2 align-items-center p-sm-0">
+    <div class="col-sm-4 text-right mr-4 d-none d-sm-block">
+      <h5>Comida</h5>
+    </div>
+    <div class="col-sm-4 mr-4 d-sm-none">
+      <h5>Comida</h5>
+    </div>
+    <div class="row col-sm-8">
+      <div class="w-100 text-left d-none d-sm-block">
+        <p id="lunch-1a" [innerHTML]="meal.p1"></p>
+      </div>
+      <div class="w-100 d-sm-none">
+        <p id="lunch-1b" [innerHTML]="meal.p1"></p>
+      </div>
+
+      <div class="w-100 text-left d-none d-sm-block">
+        <p id="lunch-2a" [innerHTML]="meal.p2 != null ? meal.p2 : null"></p>
+      </div>
+      <div class="w-100 d-sm-none">
+        <p id="lunch-2b" [innerHTML]="meal.p2 != null ? meal.p2 : null"></p>
+      </div>
+    </div>
+  </div>
+</div>

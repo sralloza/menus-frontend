@@ -10,8 +10,8 @@
       <a
         id="day-title-a"
         target="_blank"
-        [href]="menu == null ? defaultUrl : menu.url"
-        [innerHTML]="menu == null ? getDayTitle() : menu.day"
+        [href]="dayTitleLink"
+        [innerHTML]="dayTitle"
       >
       </a>
     </h1>
@@ -19,8 +19,8 @@
       <a
         id="day-title-b"
         target="_blank"
-        [href]="menu == null ? defaultUrl : menu.url"
-        [innerHTML]="menu == null ? getDayTitle() : menu.day"
+        [href]="dayTitleLink"
+        [innerHTML]="dayTitle"
       >
       </a>
     </h1>
@@ -30,80 +30,20 @@
       </div>
     </div>
 
-    <!-- Create div above #lunch and #dinner divs. -->
-    <div id="lunch" class="container" *ngIf="loaded && menu != null">
-      <div class="row h-100 d-flex p-2 align-items-center p-sm-0">
-        <div class="col-sm-4 text-right mr-4 d-none d-sm-block">
-          <h5>Comida</h5>
-        </div>
-        <div class="col-sm-4 mr-4 d-sm-none">
-          <h5>Comida</h5>
-        </div>
-        <div class="row col-sm-8">
-          <div class="w-100 text-left d-none d-sm-block">
-            <p id="lunch-1a" [innerHTML]="menu.lunch.p1"></p>
-          </div>
-          <div class="w-100 d-sm-none">
-            <p id="lunch-1b" [innerHTML]="menu.lunch.p1"></p>
-          </div>
-
-          <div class="w-100 text-left d-none d-sm-block">
-            <p
-              id="lunch-2a"
-              [innerHTML]="menu.lunch.p2 != null ? menu.lunch.p2 : null"
-            ></p>
-          </div>
-          <div class="w-100 d-sm-none">
-            <p
-              id="lunch-2b"
-              [innerHTML]="menu.lunch.p2 != null ? menu.lunch.p2 : null"
-            ></p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div id="dinner" class="container" *ngIf="loaded && menu != null">
-      <div class="row h-100 d-flex p-2 align-items-center p-sm-0">
-        <div class="col-sm-4 text-right mr-4 d-none d-sm-block">
-          <h5>Cena</h5>
-        </div>
-        <div class="col-sm-4 mr-4 d-sm-none">
-          <h5>Cena</h5>
-        </div>
-        <div class="row col-sm-8">
-          <div class="w-100 text-left d-none d-sm-block">
-            <p id="dinner-1a" [innerHTML]="menu.dinner.p1"></p>
-          </div>
-          <div class="w-100 d-sm-none">
-            <p id="dinner-1b" [innerHTML]="menu.dinner.p1"></p>
-          </div>
-
-          <div class="w-100 text-left d-none d-sm-block">
-            <p
-              id="dinner-2a"
-              [innerHTML]="menu.dinner.p2 != null ? menu.dinner.p2 : null"
-            ></p>
-          </div>
-          <div class="w-100 d-sm-none">
-            <p
-              id="dinner-2b"
-              [innerHTML]="menu.dinner.p2 != null ? menu.dinner.p2 : null"
-            ></p>
-          </div>
-        </div>
-      </div>
-    </div>
     <h5 id="N/A" *ngIf="loaded && menu == null">Datos no disponibles</h5>
-  </div>
-</div>
-<div class="container h-100 d-flex justify-content-center">
-  <div class="container h-100 col-sm-8 d-flex justify-content-between p-0">
-    <div>
-      <a id="previous" class="btn btn-primary" role="button"> Anterior </a>
-    </div>
-    <div><a id="all" class="btn btn-primary" role="button">Todos</a></div>
-    <div>
-      <a id="next" class="btn btn-primary" role="button">Siguiente</a>
+    <app-lunch [meal]="lunch" *ngIf="loaded && menu != null"></app-lunch>
+    <app-dinner [meal]="dinner" *ngIf="loaded && menu != null"></app-dinner>
+
+    <div class="container h-100 d-flex justify-content-center">
+      <div class="container h-100 col-sm-8 d-flex justify-content-between p-0">
+        <div>
+          <a id="previous" class="btn btn-primary" role="button" (click)="yesterday()">Anterior</a>
+        </div>
+        <div><a id="all" class="btn btn-primary" role="button">Todos</a></div>
+        <div>
+          <a id="next" class="btn btn-primary" role="button" (click)="tomorrow()">Siguiente</a>
+        </div>
+      </div>
     </div>
   </div>
 </div>

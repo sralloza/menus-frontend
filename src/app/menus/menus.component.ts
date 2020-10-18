@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-menus',
@@ -7,10 +7,9 @@ import { Component, HostListener, OnInit } from '@angular/core';
 })
 export class MenusComponent implements OnInit {
   menus = [];
-  menu = null;
+  readonly defaultUrl = 'https://www.residenciasantiago.es/menus-1/';
   dateViewed = new Date();
   loaded = false;
-  defaultUrl = 'https://www.residenciasantiago.es/menus-1/';
   days = [
     'Domingo',
     'Lunes',
@@ -21,30 +20,44 @@ export class MenusComponent implements OnInit {
     'Sábado',
   ];
 
-  // CLICK DETECTION
-  xDown = null;
-  yDown = null;
-  lastTouch = new Date();
-
-  width = 0;
-  height = 0;
-  // If true, a middle click will auto-click in the middle button (redirect to /menus)
-  enableMiddleClick = false;
-
   constructor() {}
 
-  get todayMenuID() {
-    return this.printDate(this.dateViewed);
+  get dayTitleLink() {
+    return this.menu ? this.menu.url : this.defaultUrl;
   }
 
-  @HostListener('document:click', ['$event'])
-  clickout(event) {
-    console.log(event.target);
-    this.handleClick(event);
+  get dayTitle() {
+    if (this.menu) return this.menu.day;
+
+    var day = this.days[this.dateViewed.getDay()];
+    return day + ' ' + this.dateViewed.getDate();
+  }
+
+  get todayMenuID() {
+    var year = this.dateViewed.getFullYear();
+    var month = this.dateViewed.getMonth() + 1;
+    var day = this.dateViewed.getDate();
+
+    return day + month * 100 + year * 10000;
+  }
+
+  get menu() {
+    let menu = this.menus.find((menu) => menu['id'] == this.todayMenuID);
+    if (menu == undefined) return null;
+    return menu;
+  }
+
+  get lunch() {
+    if (this.menu) return this.menu.lunch;
+    return null;
+  }
+
+  get dinner() {
+    if (this.menu) return this.menu.dinner;
+    return null;
   }
 
   ngOnInit(): void {
-    this.updateWindowsDimensions();
     this.fetchData();
   }
 
@@ -63,7 +76,8 @@ export class MenusComponent implements OnInit {
 
   fetchData() {
     this.loadMenusFromLocalStorage();
-    if (this.menus.find((menu) => menu['id'] == this.todayMenuID)) {
+
+    if (this.menu) {
       console.log('Data found in local storage, skipping api call');
       this.storeMenusInLocalStorage();
       return this.findSelectedDay();
@@ -87,224 +101,21 @@ export class MenusComponent implements OnInit {
   }
 
   findSelectedDay() {
-    this.menu = this.menus.find((menu) => menu['id'] == this.todayMenuID);
     this.loaded = true;
 
     console.log('Updating interface using day=' + this.todayMenuID);
     console.log(this.menu);
   }
 
-  printDate(date) {
-    var year = date.getFullYear();
-    var month = date.getMonth() + 1;
-    var day = date.getDate();
-
-    if (month < 10) {
-      month = '0' + month;
-    }
-    month = '' + month;
-
-    if (day < 10) {
-      day = '0' + day;
-    }
-    day = '' + day;
-
-    return parseInt(year + month + day);
-  }
-
-  getDayTitle() {
-    var day = this.days[this.dateViewed.getDay()];
-    return day + ' ' + this.dateViewed.getDate();
-  }
-
   tomorrow() {
     this.dateViewed.setDate(this.dateViewed.getDate() + 1);
     this.findSelectedDay();
-    console.log(
-      'Changed day to tomorrow (' + this.printDate(this.dateViewed) + ')'
-    );
+    console.log(`Changed day to tomorrow (${this.todayMenuID})`);
   }
 
   yesterday() {
     this.dateViewed.setDate(this.dateViewed.getDate() - 1);
     this.findSelectedDay();
-    console.log(
-      'Changed day to yesterday (' + this.printDate(this.dateViewed) + ')'
-    );
-  }
-
-  // Calculate width
-  updateWindowsDimensions() {
-    let newWidth = Math.max(
-      document.documentElement.clientWidth,
-      window.innerWidth || 0
-    );
-    let newHeight = Math.max(
-      document.documentElement.clientHeight,
-      window.innerHeight || 0
-    );
-
-    if (newWidth == this.width && newHeight == this.height) return;
-
-    this.width = newWidth;
-    this.height = newHeight;
-
-    console.log('Calculated width: ' + this.width);
-    console.log('Calculated height: ' + this.height);
-  }
-
-  // Events listeners
-  // document.addEventListener('touchstart', handleTouchStart, false);
-  // document.addEventListener("click", handleClick);
-  // document.onkeydown = detectArrows;
-  // document.onkeypress = detectKey;
-
-  // Handlers
-  handleClick(e) {
-    let timedelta = new Date().getTime() - this.lastTouch.getTime();
-    console.log(timedelta);
-    if (timedelta < 750) return;
-
-    this.findSelectedDay();
-    let cursorX = (e.pageX * 100) / this.width;
-    let cursorY = (e.pageY * 100) / this.height;
-
-    if (cursorX == 0 || cursorY == 0) return;
-
-    console.log(
-      'Click detected on PC: (' +
-        cursorX.toFixed(2) +
-        '%, ' +
-        cursorY.toFixed(2) +
-        '%)'
-    );
-    return this.clickDetected(cursorX, cursorY);
-  }
-
-  getTouches(evt) {
-    return evt.touches || evt.originalEvent.touches;
-  }
-
-  handleTouchStart(evt) {
-    this.updateWindowsDimensions();
-    const firstTouch = this.getTouches(evt)[0];
-    let cursorX = (firstTouch.clientX * 100) / this.width;
-    let cursorY = (firstTouch.clientY * 100) / this.height;
-
-    console.log(
-      'Detected Touch: (' +
-        cursorX.toFixed(2) +
-        '%, ' +
-        cursorY.toFixed(2) +
-        '%)'
-    );
-    this.lastTouch = new Date();
-    return this.clickDetected(cursorX, cursorY);
-  }
-
-  clickDetected(cursorXPercentage, cursorYPercentage) {
-    let jumboUp =
-      (document.getElementById('main-jumbotron').getBoundingClientRect()[
-        'top'
-      ] *
-        100) /
-      this.height;
-    let prevLeft =
-      (document.getElementById('previous').getBoundingClientRect()['left'] *
-        100) /
-      this.width;
-    let prevWidth =
-      (document.getElementById('previous').getBoundingClientRect()['width'] *
-        100) /
-      this.width;
-    let allWidth =
-      (document.getElementById('all').getBoundingClientRect()['width'] * 100) /
-      this.width;
-
-    let y = jumboUp;
-    let x = (50 - prevLeft - prevWidth - allWidth / 2) / 2;
-    let centerDiff = allWidth / 2 + x;
-
-    let rightMargin = 50 + centerDiff;
-    let leftMargin = 50 - centerDiff;
-
-    if (cursorYPercentage < y) {
-      console.log('Cancelling click (click above jumbotron)');
-      return;
-    }
-
-    if (cursorXPercentage > rightMargin) return this.clickNext();
-    if (cursorXPercentage < leftMargin) return this.clickPrevious();
-
-    if (this.enableMiddleClick) return this.clickAll();
-  }
-
-  clickPrevious() {
-    console.log('Calling yesterday()');
-    this.yesterday();
-  }
-
-  clickNext() {
-    console.log('Calling tomorrow()');
-    this.tomorrow();
-  }
-
-  clickAll() {
-    console.log('Autoclicking middle button (all)');
-    document.getElementById('all').click();
-  }
-
-  // Keys
-
-  detectArrows(e) {
-    // Detects left and right arrows
-    switch (e.keyCode) {
-      case 37:
-        // Left arrow
-        console.log('Left arrow pressed');
-        this.clickPrevious();
-        break;
-      case 39:
-        // Right arrow
-        console.log('Right arrow pressed');
-        this.clickNext();
-        break;
-    }
-  }
-
-  detectKey(e) {
-    // Detects letters J, K, H and T
-    switch (e.keyCode) {
-      case 106:
-      case 74:
-        // Letter J
-        console.log('Letter J pressed');
-        this.clickPrevious();
-        break;
-      case 107:
-      case 75:
-        // Letter K
-        console.log('Letter K pressed');
-        this.clickNext();
-        break;
-      case 104:
-      case 72:
-        // Letter H
-        console.log('Letter T pressed');
-        this.jumpToToday();
-        break;
-      case 116:
-      case 84:
-        // Letter T
-        console.log('Letter T pressed');
-        this.jumpToToday();
-        break;
-    }
-  }
-
-  jumpToToday() {
-    let today = new Date();
-    this.dateViewed = today;
-    this.findSelectedDay();
+    console.log(`Changed day to yesterday (${this.todayMenuID})`);
   }
 }
