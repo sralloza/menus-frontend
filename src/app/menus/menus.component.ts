@@ -33,6 +33,10 @@ export class MenusComponent implements OnInit {
 
   constructor() {}
 
+  get todayMenuID() {
+    return this.printDate(this.dateViewed);
+  }
+
   @HostListener('document:click', ['$event'])
   clickout(event) {
     console.log(event.target);
@@ -44,26 +48,29 @@ export class MenusComponent implements OnInit {
     this.fetchData();
   }
 
-  get(name) {
-    if (name == '') return false;
-    let queryDict = {};
-    queryDict[name] = false;
-    location.search
-      .substr(1)
-      .split('&')
-      .forEach((item) => {
-        queryDict[item.split('=')[0]] = true;
-      });
+  loadMenusFromLocalStorage() {
+    let menus = JSON.parse(localStorage.getItem('menus'));
+    if (menus == undefined) {
+      console.log('No menus found in local storage');
+      return;
+    }
+    this.menus = menus;
+  }
 
-    return queryDict[name];
+  storeMenusInLocalStorage() {
+    localStorage.setItem('menus', JSON.stringify(this.menus));
   }
 
   fetchData() {
-    var forceUpdate = this.get('update');
-    console.log('fetch with update=' + forceUpdate);
+    this.loadMenusFromLocalStorage();
+    if (this.menus.find((menu) => menu['id'] == this.todayMenuID)) {
+      console.log('Data found in local storage, skipping api call');
+      this.storeMenusInLocalStorage();
+      return this.findSelectedDay();
+    }
 
-    var url = 'https://menus.sralloza.es/api/menus';
-    if (forceUpdate) url += '?update';
+    var url = 'https://resi.sralloza.es/api/menus';
+    console.log('sending api call');
 
     fetch(url)
       .then((response) => {
@@ -71,6 +78,7 @@ export class MenusComponent implements OnInit {
       })
       .then((data) => {
         this.menus = data;
+        this.storeMenusInLocalStorage();
         this.findSelectedDay();
       })
       .catch((err) => {
@@ -79,21 +87,10 @@ export class MenusComponent implements OnInit {
   }
 
   findSelectedDay() {
-    var updateRequest = this.get('update');
-    var ask = this.printDate(this.dateViewed);
-    this.menu = this.menus.find((menu) => menu['id'] == ask);
+    this.menu = this.menus.find((menu) => menu['id'] == this.todayMenuID);
     this.loaded = true;
 
-    var nArguments = location.search.substr(1).split('&').length;
-    var update = false;
-
-    if (nArguments) {
-      if (updateRequest)
-        if (update) console.log('Database update request accepted');
-        else console.log('Database update request denied');
-    }
-
-    console.log('Updating interface using day=' + ask);
+    console.log('Updating interface using day=' + this.todayMenuID);
     console.log(this.menu);
   }
 
