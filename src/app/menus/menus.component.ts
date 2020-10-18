@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ApiService } from '../api.service';
 
 @Component({
   selector: 'app-menus',
@@ -20,7 +21,7 @@ export class MenusComponent implements OnInit {
     'Sábado',
   ];
 
-  constructor() {}
+  constructor(private api: ApiService) {}
 
   get dayTitleLink() {
     return this.menu ? this.menu.url : this.defaultUrl;
@@ -61,43 +62,19 @@ export class MenusComponent implements OnInit {
     this.fetchData();
   }
 
-  loadMenusFromLocalStorage() {
-    let menus = JSON.parse(localStorage.getItem('menus'));
-    if (menus == undefined) {
-      console.log('No menus found in local storage');
-      return;
-    }
-    this.menus = menus;
-  }
-
-  storeMenusInLocalStorage() {
-    localStorage.setItem('menus', JSON.stringify(this.menus));
-  }
-
   fetchData() {
-    this.loadMenusFromLocalStorage();
-
-    if (this.menu) {
-      console.log('Data found in local storage, skipping api call');
-      this.storeMenusInLocalStorage();
-      return this.findSelectedDay();
-    }
-
-    var url = 'https://resi.sralloza.es/api/menus';
-    console.log('sending api call');
-
-    fetch(url)
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        this.menus = data;
-        this.storeMenusInLocalStorage();
+    let response = this.api.getMenus();
+    response.then(
+      (menus) => {
+        this.menus = menus;
         this.findSelectedDay();
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+        console.log(this.menu);
+      },
+      (error) => {
+        console.log('error:');
+        console.log(error);
+      }
+    );
   }
 
   findSelectedDay() {

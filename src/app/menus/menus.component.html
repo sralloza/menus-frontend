@@ -37,11 +37,25 @@
     <div class="container h-100 d-flex justify-content-center">
       <div class="container h-100 col-sm-8 d-flex justify-content-between p-0">
         <div>
-          <a id="previous" class="btn btn-primary" role="button" (click)="yesterday()">Anterior</a>
+          <a
+            id="previous"
+            class="btn btn-primary px-md-2"
+            role="button"
+            (click)="yesterday()"
+            >Anterior</a
+          >
         </div>
-        <div><a id="all" class="btn btn-primary" role="button">Todos</a></div>
         <div>
-          <a id="next" class="btn btn-primary" role="button" (click)="tomorrow()">Siguiente</a>
+          <a id="all" class="btn btn-primary px-md-2" role="button">Todos</a>
+        </div>
+        <div>
+          <a
+            id="next"
+            class="btn btn-primary px-md-2"
+            role="button"
+            (click)="tomorrow()"
+            >Siguiente</a
+          >
         </div>
       </div>
     </div>

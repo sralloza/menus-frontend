@@ -9,12 +9,22 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { DinnerComponent } from './menus/dinner/dinner.component';
 import { LunchComponent } from './menus/lunch/lunch.component';
-
+import { ApiService } from './api.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [AppComponent, MenusComponent, DinnerComponent, LunchComponent],
-  imports: [AppRoutingModule, BrowserModule, CommonModule, NgbModule, ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })],
-  providers: [],
+  imports: [
+    AppRoutingModule,
+    BrowserModule,
+    CommonModule,
+    NgbModule,
+    HttpClientModule,
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: environment.production,
+    }),
+  ],
+  providers: [ApiService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
