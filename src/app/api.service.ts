@@ -20,10 +20,9 @@ export class ApiService {
       }
 
       console.log('sending api call');
-      let response = this.http.get(url);
-      response.subscribe(
-        (menus) => {
-          this.storeMenusInLocalStorage(menus);
+      this.http.get(url).subscribe(
+        (response) => {
+          this.storeMenusInLocalStorage(response);
           resolve(response);
         },
         (error) => {

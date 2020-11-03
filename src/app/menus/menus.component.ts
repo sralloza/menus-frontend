@@ -28,22 +28,16 @@ export class MenusComponent implements OnInit {
   }
 
   get dayTitle() {
-    if (this.menu) return this.menu.day;
+    if (this.menu) return this.menu.title;
 
     var day = this.days[this.dateViewed.getDay()];
     return day + ' ' + this.dateViewed.getDate();
   }
 
-  get todayMenuID() {
-    var year = this.dateViewed.getFullYear();
-    var month = this.dateViewed.getMonth() + 1;
-    var day = this.dateViewed.getDate();
-
-    return day + month * 100 + year * 10000;
-  }
-
   get menu() {
-    let menu = this.menus.find((menu) => menu['id'] == this.todayMenuID);
+    let menu = this.menus.find(
+      (menu) => menu['id'] == this.dateViewed.toISOString().slice(0, 10)
+    );
     if (menu == undefined) return null;
     return menu;
   }
@@ -66,13 +60,21 @@ export class MenusComponent implements OnInit {
     let response = this.api.getMenus();
     response.then(
       (menus) => {
-        this.menus = menus;
+        for (let old_menu of menus) {
+          let new_menu = {
+            id: old_menu.id,
+            lunch: { p1: old_menu.lunch1, p2: old_menu.lunch2 },
+            dinner: { p1: old_menu.dinner1, p2: old_menu.dinner2 },
+            url: old_menu.url,
+            title: old_menu.title,
+          };
+          this.menus.push(new_menu);
+        }
         this.findSelectedDay();
-        console.log(this.menu);
       },
       (error) => {
-        console.log('error:');
-        console.log(error);
+        console.error('error:');
+        console.error(error);
       }
     );
   }
@@ -80,19 +82,21 @@ export class MenusComponent implements OnInit {
   findSelectedDay() {
     this.loaded = true;
 
-    console.log('Updating interface using day=' + this.todayMenuID);
+    console.log('Updating interface using day=' + this.dateViewed);
     console.log(this.menu);
   }
 
   tomorrow() {
     this.dateViewed.setDate(this.dateViewed.getDate() + 1);
     this.findSelectedDay();
-    console.log(`Changed day to tomorrow (${this.todayMenuID})`);
+    console.log(`Changed day to tomorrow (${this.dateViewed})`);
   }
 
   yesterday() {
     this.dateViewed.setDate(this.dateViewed.getDate() - 1);
     this.findSelectedDay();
-    console.log(`Changed day to yesterday (${this.todayMenuID})`);
+    console.log(`Changed day to yesterday (${this.dateViewed})`);
+  }
+
   }
 }
