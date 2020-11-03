@@ -11,6 +11,7 @@ import { ApiService } from './api.service';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AddComponent } from './menus/add/add.component';
+import { DeleteComponent } from './menus/delete/delete.component';
 import { DinnerComponent } from './menus/dinner/dinner.component';
 import { LunchComponent } from './menus/lunch/lunch.component';
 import { ShowComponent } from './menus/show/show.component';
@@ -22,6 +23,7 @@ import { ShowComponent } from './menus/show/show.component';
     DinnerComponent,
     LunchComponent,
     AddComponent,
+    DeleteComponent,
   ],
   imports: [
     AlertModule,

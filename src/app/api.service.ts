@@ -5,12 +5,11 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class ApiService {
+  url = 'http://localhost/menus';
   constructor(private http: HttpClient) {}
 
   getMenus(): Promise<any> {
     let menus = this.getMenusFromLocalStorage();
-
-    var url = 'http://localhost/menus';
 
     return new Promise((resolve, reject) => {
       if (menus != null) {
@@ -20,7 +19,7 @@ export class ApiService {
       }
 
       console.log('sending api call');
-      this.http.get(url).subscribe(
+      this.http.get(this.url).subscribe(
         (response) => {
           this.storeMenusInLocalStorage(response);
           resolve(response);
@@ -46,21 +45,9 @@ export class ApiService {
   }
 
   addMenu(menu): Promise<any> {
-    var url = 'http://localhost/menus';
-
-    // var form_data = new FormData();
-    // form_data.append('token', '202010182235');
-    // form_data.append('day', menu.day);
-    // form_data.append('month', menu.month);
-    // form_data.append('year', menu.year);
-    // form_data.append('lunch-1', menu.lunch.p1);
-    // form_data.append('lunch-2', menu.lunch.p2);
-    // form_data.append('dinner-1', menu.dinner.p1);
-    // form_data.append('dinner-2', menu.dinner.p2);
-
     return new Promise((resolve, reject) => {
       console.log('sending api call');
-      let response = this.http.post(url, menu);
+      let response = this.http.post(this.url, menu);
       response.subscribe(
         (response) => {
           console.log(response);
@@ -72,4 +59,32 @@ export class ApiService {
       );
     });
   }
+
+  removeMenu(date: Date, token: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const options = {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: {
+          id: date,
+          token_id: token,
+        },
+      };
+
+      let response = this.http.delete(this.url, options);
+      response.subscribe(
+        (response) => {
+          console.log(response);
+          resolve();
+        },
+        (error) => {
+          console.log(error);
+          reject(error);
+        }
+      );
+    });
+  }
+
+  updateMenu(menu) {}
 }
