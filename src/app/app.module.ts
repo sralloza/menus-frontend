@@ -6,6 +6,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { environment } from '../environments/environment';
+import { AlertModule } from './alert';
 import { ApiService } from './api.service';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -23,6 +24,7 @@ import { ShowComponent } from './menus/show/show.component';
     AddComponent,
   ],
   imports: [
+    AlertModule,
     AppRoutingModule,
     BrowserModule,
     FormsModule,

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AlertService } from 'src/app/alert';
 import { ApiService } from 'src/app/api.service';
 
 @Component({
@@ -14,11 +15,7 @@ export class AddComponent implements OnInit {
   dinner2: null;
   token: null;
 
-  errorMsg = 'Unkown error';
-  successFlag = false;
-  errorFlag = false;
-
-  constructor(private api: ApiService) {}
+  constructor(private api: ApiService, private alerts: AlertService) {}
 
   ngOnInit(): void {}
 
@@ -30,15 +27,8 @@ export class AddComponent implements OnInit {
     this.dinner2 = null;
     this.token = null;
   }
-  log() {
-    console.log(this.successFlag);
-    console.log(this.errorFlag);
-  }
 
   addMenu() {
-    this.successFlag = false;
-    this.errorFlag = false;
-
     var menu = {
       id: this.date,
       lunch1: this.lunch1,
@@ -52,12 +42,11 @@ export class AddComponent implements OnInit {
       .addMenu(menu)
       .then((response) => {
         console.log(response);
-        this.successFlag = true;
+        this.alerts.info('Menu created successfully');
       })
       .catch((error) => {
         console.log(error);
-        this.errorFlag = true;
-        this.errorMsg = error.error.detail;
+        this.alerts.error(error.error.detail);
       });
   }
 }
