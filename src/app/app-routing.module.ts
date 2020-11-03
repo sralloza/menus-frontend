@@ -1,10 +1,26 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
+import { AddComponent } from './menus/add/add.component';
+import { ShowComponent } from './menus/show/show.component';
 
-const routes: Routes = [];
+const routes: Routes = [
+  {
+    path: 'add',
+    component: AddComponent,
+  },
+  {
+    path: '404',
+    redirectTo: '',
+    component: ShowComponent,
+  },
+  {
+    path: '',
+    component: ShowComponent,
+  },
+];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

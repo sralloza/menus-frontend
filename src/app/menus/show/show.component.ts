@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from '../api.service';
+import { ApiService } from '../../api.service';
 
 @Component({
   selector: 'app-menus',
-  templateUrl: './menus.component.html',
-  styleUrls: ['./menus.component.css'],
+  templateUrl: './show.component.html',
+  styleUrls: ['./show.component.css'],
 })
-export class MenusComponent implements OnInit {
+export class ShowComponent implements OnInit {
   menus = [];
   readonly defaultUrl = 'https://www.residenciasantiago.es/menus-1/';
   dateViewed = new Date();
@@ -96,7 +96,5 @@ export class MenusComponent implements OnInit {
     this.dateViewed.setDate(this.dateViewed.getDate() - 1);
     this.findSelectedDay();
     console.log(`Changed day to yesterday (${this.dateViewed})`);
-  }
-
   }
 }

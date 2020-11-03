@@ -1,22 +1,31 @@
 import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
+import { ServiceWorkerModule } from '@angular/service-worker';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { environment } from '../environments/environment';
+import { ApiService } from './api.service';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { MenusComponent } from './menus/menus.component';
-import { ServiceWorkerModule } from '@angular/service-worker';
-import { environment } from '../environments/environment';
+import { AddComponent } from './menus/add/add.component';
 import { DinnerComponent } from './menus/dinner/dinner.component';
 import { LunchComponent } from './menus/lunch/lunch.component';
-import { ApiService } from './api.service';
-import { HttpClientModule } from '@angular/common/http';
+import { ShowComponent } from './menus/show/show.component';
 
 @NgModule({
-  declarations: [AppComponent, MenusComponent, DinnerComponent, LunchComponent],
+  declarations: [
+    AppComponent,
+    ShowComponent,
+    DinnerComponent,
+    LunchComponent,
+    AddComponent,
+  ],
   imports: [
     AppRoutingModule,
     BrowserModule,
+    FormsModule,
     CommonModule,
     NgbModule,
     HttpClientModule,
