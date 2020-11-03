@@ -42,6 +42,7 @@ export class AlertService {
   alert(alert: Alert) {
     alert.id = alert.id || this.defaultId;
     this.subject.next(alert);
+    window.scroll(0, 0);
   }
 
   // clear alerts
