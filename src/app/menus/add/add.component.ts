@@ -29,23 +29,25 @@ export class AddComponent implements OnInit {
   }
 
   addMenu() {
-    var menu = {
-      id: this.date,
-      lunch1: this.lunch1,
-      lunch2: this.lunch2,
-      dinner1: this.dinner1,
-      dinner2: this.dinner2,
-      token_id: this.token,
-    };
-    console.log(menu);
+    if (!this.date) {
+      this.alerts.error('Must set date');
+      return;
+    }
+    if (!this.token) {
+      this.alerts.error('Must set token');
+      return;
+    }
+
     this.api
       .addMenu(menu)
       .then((response) => {
         console.log(response);
-        this.alerts.info('Menu created successfully');
+        this.alerts.clear();
+        this.alerts.success('Menu created successfully');
+        this.reset();
       })
       .catch((error) => {
-        console.log(error);
+        this.alerts.clear();
         this.alerts.error(error.error.detail);
       });
   }

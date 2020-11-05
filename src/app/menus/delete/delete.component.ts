@@ -20,6 +20,15 @@ export class DeleteComponent implements OnInit {
   }
 
   deleteMenu() {
+    if (!this.date) {
+      this.alerts.error('Must set date');
+      return;
+    }
+    if (!this.token) {
+      this.alerts.error('Must set token');
+      return;
+    }
+
     this.api.removeMenu(this.date, this.token).then(
       (response) => {
         this.alerts.success('Menu removed');
