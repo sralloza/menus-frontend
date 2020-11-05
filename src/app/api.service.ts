@@ -5,7 +5,9 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class ApiService {
-  url = 'http://localhost/menus';
+  // url = 'http://localhost/menus';
+  url = 'https://menus-test.sralloza.es/api/menus';
+
   constructor(private http: HttpClient) {}
 
   getMenus(): Promise<any> {
@@ -32,8 +34,18 @@ export class ApiService {
   }
 
   getMenusFromLocalStorage() {
+    return null
     let menus = JSON.parse(localStorage.getItem('menus'));
-    if (menus == undefined) {
+    let now = new Date('2020-12-12');
+    let menu = menus.find(
+      (menu) => menu['id'] == now.toISOString().slice(0, 10)
+    );
+
+    if (menu == undefined) {
+      console.log('forcing update of menus');
+    }
+
+    if (menus == undefined || menu == undefined) {
       console.log('No menus found in local storage');
       return null;
     }
@@ -44,8 +56,23 @@ export class ApiService {
     localStorage.setItem('menus', JSON.stringify(menus));
   }
 
-  addMenu(menu): Promise<any> {
+  addMenu(
+    date: Date,
+    lunch1: string,
+    lunch2: string,
+    dinner1: string,
+    dinner2: string,
+    token: string
+  ): Promise<any> {
     return new Promise((resolve, reject) => {
+      let menu = {
+        id: date,
+        lunch1: lunch1,
+        lunch2: lunch2,
+        dinner1: dinner1,
+        dinner2: dinner2,
+        token_id: token,
+      };
       console.log('sending api call');
       let response = this.http.post(this.url, menu);
       response.subscribe(

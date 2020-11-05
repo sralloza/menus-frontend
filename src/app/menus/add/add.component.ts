@@ -39,7 +39,14 @@ export class AddComponent implements OnInit {
     }
 
     this.api
-      .addMenu(menu)
+      .addMenu(
+        this.date,
+        this.lunch1,
+        this.lunch2,
+        this.dinner1,
+        this.dinner2,
+        this.token
+      )
       .then((response) => {
         console.log(response);
         this.alerts.clear();
