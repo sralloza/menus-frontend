@@ -50,7 +50,7 @@ export class AddComponent implements OnInit {
       .then((response) => {
         console.log(response);
         this.alerts.clear();
-        this.alerts.success('Menu created successfully');
+        this.alerts.success(`Menu created successfully (${this.date})`);
         this.reset();
       })
       .catch((error) => {
